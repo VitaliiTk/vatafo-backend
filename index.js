@@ -1,6 +1,7 @@
 import express from 'express'
 import 'dotenv/config'
 import morgan from 'morgan'
+import cors from 'cors'
 
 // routes
 import carsRouter from './routes/cars.routes.js'
@@ -12,6 +13,7 @@ const PORT = process.env.PORT || 3000
 
 // midleware
 app.use(morgan('dev'))
+app.use(cors())
 
 // index routes
 app.use('/cars', carsRouter)
