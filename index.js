@@ -9,4 +9,12 @@ app.get('/', (req, res) => {
   res.send('root endpoint')
 })
 
+app.get('/cars', (req, res) => {
+  res.send('cars')
+})
+
+app.get('users', (req, res) => {
+  console.log('users')
+})
+
 app.listen(PORT, console.log(`Server runing on port: http://localhost:${PORT}`))
