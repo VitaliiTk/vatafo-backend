@@ -6,6 +6,7 @@ import cors from 'cors'
 // routes
 import carsRouter from './routes/cars.routes.js'
 import usersRouter from './routes/users.routes.js'
+import favoritesRouter from './routes/favorites.routes.js'
 
 const app = express()
 
@@ -18,6 +19,7 @@ app.use(cors())
 // index routes
 app.use('/cars', carsRouter)
 app.use('/users', usersRouter)
+app.use('/favorites', favoritesRouter)
 
 // server listening
 app.listen(PORT, console.log(`Server runing on port: http://localhost:${PORT}`))
