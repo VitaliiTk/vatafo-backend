@@ -13,4 +13,12 @@ router.get('/brands', (req, res) => {
   res.send(brandsWithCars)
 })
 
+router.get('/:id', (req, res) => {
+  const id = req.params.id
+  console.log(typeof car_id)
+  const car = cars.find((obj) => obj.id == id)
+  if (!car) return res.status(404).send('не существует')
+  res.status(200).send(car)
+})
+
 export default router

@@ -1,6 +1,6 @@
 export const cars = [
   {
-    id: 1,
+    id: '1',
     userId: '001',
     author: 'John Doe',
     tel: '+996557184916',

@@ -5,7 +5,7 @@ import cors from 'cors'
 
 // routes
 import carsRouter from './routes/cars.routes.js'
-import usersRouter from './routes/users.routes.js'
+import usersRouter from './routes/user.routes.js'
 import favoritesRouter from './routes/favorites.routes.js'
 
 const app = express()
