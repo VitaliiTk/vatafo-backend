@@ -1,20 +1,38 @@
 import express from 'express'
 
-import { users } from '../users.js'
+// import { users } from '../users.js'
+
+import pool from '../db.js'
 
 const router = express.Router()
 
 // Users root route
-router.get('/', (req, res) => {
-  res.send(users)
+router.get('/', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM users')
+    res.send(result)
+  } catch (error) {
+    console.log(error.message)
+    res.status(500).send('Ошибка сервера')
+  }
 })
+
 // take user by user id
-router.get('/:id', (req, res) => {
-  const user_id = req.params.id
-  console.log(user_id)
-  const user = users.find((obj) => obj.id === user_id)
-  if (!user) return res.send('такого user нет')
-  res.send(user)
+router.get('/:id', async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT * FROM users WHERE id = ${req.params.id}`
+    )
+    const user = result.rows[0]
+    if (user) {
+      return res.send(user)
+    } else {
+      res.send(`пользователя с id:${req.params.id} не существует`)
+    }
+  } catch (error) {
+    console.log(error.message)
+    res.status(500).send('Ошибка сервера')
+  }
 })
 
 export default router
