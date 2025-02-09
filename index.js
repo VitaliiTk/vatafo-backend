@@ -17,8 +17,8 @@ app.use(morgan('dev'))
 app.use(cors())
 
 // index routes
-app.use('/cars', carsRouter)
 app.use('/users', usersRouter)
+app.use('/cars', carsRouter)
 app.use('/favorites', favoritesRouter)
 
 // server listening
