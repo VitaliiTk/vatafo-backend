@@ -1,3 +1,4 @@
+// import pool from '../db.js'
 import pool from '../db.js'
 
 export const getAllUsers = async (_, res) => {
