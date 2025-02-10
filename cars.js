@@ -1,7 +1,7 @@
 export const cars = [
   {
-    id: '1',
-    userId: '001',
+    id: 1,
+    userId: 3,
     author: 'John Doe',
     tel: '+996557184916',
     info: 'Ford F-150: 2023г. 2,7л. Автомат, Бензин',
@@ -42,7 +42,7 @@ export const cars = [
   },
   {
     id: 2,
-    userId: '056',
+    userId: 2,
     author: 'John Doe',
     tel: '+996557184916',
     info: 'BMW M3 G80 Sedan Competition - 19 January 2022 - Autogespot',
@@ -83,7 +83,7 @@ export const cars = [
   },
   {
     id: 3,
-    userId: '777',
+    userId: 3,
     author: 'John Doe',
     tel: '+996557184916',
     info: "Here's An Illustrated Look At The 2022 BMW M3 Touring | Carscoops",
@@ -124,7 +124,7 @@ export const cars = [
   },
   {
     id: 4,
-    userId: '111',
+    userId: 2,
     author: 'John Doe',
     tel: '+996557184916',
     info: '2022 BMW M3 / M4 Competition: First Look - autoNXT.net',
@@ -165,7 +165,7 @@ export const cars = [
   },
   {
     id: 5,
-    userId: '001',
+    userId: 1,
     author: 'Bryan Soles',
     tel: '+996557184916',
     info: '2022 BMW M3 / M4 Competition: First Look - autoNXT.net',
@@ -206,7 +206,7 @@ export const cars = [
   },
   {
     id: 6,
-    userId: '001',
+    userId: 1,
     author: 'Dick Nilson',
     tel: '+996557184916',
     info: '2022 BMW M3 Competition xDrive First Drive & POV! Is it WORTH the Price?',
@@ -247,7 +247,7 @@ export const cars = [
   },
   {
     id: 7,
-    userId: '001',
+    userId: 1,
     author: 'Bred Pit',
     tel: '+996557184916',
     info: '2022 BMW M3 Competition xDrive First Drive & POV! Is it WORTH the Price?',
@@ -288,7 +288,7 @@ export const cars = [
   },
   {
     id: 8,
-    userId: '001',
+    userId: 1,
     author: 'Bill Winston',
     tel: '+996557184916',
     info: 'Used 2022 BMW M3 Competition xDrive For Sale (Sold) | Acton Auto Boutique Stock #M21732',
@@ -329,7 +329,7 @@ export const cars = [
   },
   {
     id: 9,
-    userId: '001',
+    userId: 1,
     author: 'Bill Winston',
     tel: '+996557184916',
     info: 'Porsche reveals a new hybrid 911 as more consumers embrace hybrids over electric vehicles | CNN Business',
@@ -370,7 +370,7 @@ export const cars = [
   },
   {
     id: 10,
-    userId: '001',
+    userId: 1,
     author: 'Bill Winston',
     tel: '+996557184916',
     info: 'Прокат Порше | 911, Кайенна, Макан, Панамера, Тайкан',
@@ -411,7 +411,7 @@ export const cars = [
   },
   {
     id: 11,
-    userId: '001',
+    userId: 1,
     author: 'Nelly',
     tel: '+996557184916',
     info: 'Porsche Reports US Retail Sales for 2023 - Porsche Newsroom USA',
@@ -452,7 +452,7 @@ export const cars = [
   },
   {
     id: 12,
-    userId: '001',
+    userId: 1,
     author: 'James Wang',
     tel: '+996557184916',
     info: 'Ile pieniędzy potrzebujesz, aby jeździć Porsche? Mniej niż myślisz! - WyjątkowyPrezent.pl',
@@ -493,7 +493,7 @@ export const cars = [
   },
   {
     id: 13,
-    userId: '001',
+    userId: 1,
     author: 'James Wang',
     tel: '+996557184916',
     info: '2025 Ford Expedition Review, Pricing, and Specs',
@@ -534,7 +534,7 @@ export const cars = [
   },
   {
     id: 14,
-    userId: '001',
+    userId: 1,
     author: 'Daston',
     tel: '+996557184916',
     info: 'Ford Mustang GT 5.0 - SWS Cars',

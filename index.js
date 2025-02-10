@@ -15,6 +15,7 @@ const PORT = process.env.PORT || 3000
 // midleware
 app.use(morgan('dev'))
 app.use(cors())
+app.use(express.urlencoded({ extended: true }))
 
 // index routes
 app.use('/users', usersRouter)
