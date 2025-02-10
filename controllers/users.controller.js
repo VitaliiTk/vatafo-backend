@@ -1,29 +1,19 @@
-// import pool from '../db.js'
-import pool from '../db.js'
+import { User } from '../models/User.model.js'
 
 export const getAllUsers = async (_, res) => {
   try {
-    const result = await pool.query('SELECT * FROM users')
-    res.send(result.rows)
+    const users = await User.findAll()
+    res.json(users)
   } catch (error) {
-    console.log(error)
-    res.status(500).json(error)
+    res.status(500).json({ error: 'Server error' })
   }
 }
 
 export const getUser = async (req, res) => {
   try {
-    const result = await pool.query(
-      `SELECT * FROM users WHERE id = ${req.params.id}`
-    )
-    const user = result.rows[0]
-    if (user) {
-      return res.send(user)
-    } else {
-      res.send(`пользователя с id:${req.params.id} не существует`)
-    }
+    const user = await User.findByPk(req.params.id)
+    res.json({ username: user.username, email: user.email, role: user.role })
   } catch (error) {
-    console.log(error.message)
-    res.status(500).send('Ошибка сервера')
+    res.status(500).json({ error: 'Server error' })
   }
 }
