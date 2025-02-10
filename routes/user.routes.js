@@ -5,11 +5,11 @@ import express from 'express'
 import { getAllUsers, getUser } from '../controllers/users.controller.js'
 
 // middlewares
-import { authMiddleware } from '../middleware/auth.js'
+import { authMiddleware } from '../middleware/auth.middleware.js'
 
 const router = express.Router()
 
 router.get('/', authMiddleware, getAllUsers)
-router.get('/:id', authMiddleware, getUser)
+router.get('/me', authMiddleware, getUser)
 
 export default router
