@@ -12,7 +12,12 @@ export const getAllUsers = async (_, res) => {
 export const getUser = async (req, res) => {
   try {
     const user = await User.findByPk(req.params.id)
-    res.json({ username: user.username, email: user.email, role: user.role })
+    res.json({
+      username: user.username,
+      email: user.email,
+      role: user.role,
+      avatar: user.avatar,
+    })
   } catch (error) {
     res.status(500).json({ error: 'Server error' })
   }

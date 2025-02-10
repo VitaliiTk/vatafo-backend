@@ -12,7 +12,7 @@ export const registration = async (req, res) => {
     }
 
     const newUser = await User.create({ username, email, password })
-    res.status(201).json({ message: 'User registered seccessfully' })
+    res.status(201).json({ message: 'User registered seccessfully', newUser })
   } catch (error) {
     res.status(500).json({ error: 'Server error' })
   }
@@ -40,7 +40,7 @@ export const login = async (req, res) => {
       { expiresIn: '1h' }
     )
 
-    res.json({ token })
+    res.json({ token, user })
   } catch (error) {
     res.status(500).json({ error: 'Server error' })
   }
