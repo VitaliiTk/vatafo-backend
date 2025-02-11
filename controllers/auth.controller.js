@@ -8,13 +8,15 @@ export const registration = async (req, res) => {
   try {
     const existingUser = await User.findOne({ where: { email } })
     if (existingUser) {
-      return res.status(400).json({ error: 'Email already exists' })
+      return res.status(400).json({ error: 'Электронная почта уже существует' })
     }
 
     const newUser = await User.create({ username, email, password })
-    res.status(201).json({ message: 'User registered seccessfully', newUser })
+    res
+      .status(201)
+      .json({ message: 'Пользователь успешно зарегистрирован', newUser })
   } catch (error) {
-    res.status(500).json({ error: 'Server error' })
+    res.status(500).json({ error: 'Ошибка сервера' })
   }
 }
 
@@ -25,12 +27,12 @@ export const login = async (req, res) => {
   try {
     const user = await User.findOne({ where: { email } })
     if (!user) {
-      return res.status(400).json({ error: 'Invalid credentials' })
+      return res.status(400).json({ error: 'Недействительные учетные данные' })
     }
 
     const isMatch = await user.comparePassword(password)
     if (!isMatch) {
-      return res.status(400).json({ error: 'Invalid credentials' })
+      return res.status(400).json({ error: 'Недействительные учетные данные' })
     }
 
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
