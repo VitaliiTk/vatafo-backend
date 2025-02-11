@@ -7,6 +7,7 @@ import cors from 'cors'
 // routes
 import usersRouter from './routes/user.routes.js'
 import authRouter from './routes/auth.routes.js'
+import errorRouter from './routes/error.routes.js'
 
 const app = express()
 
@@ -21,6 +22,7 @@ app.use(express.json())
 // index routes
 app.use('/auth', authRouter)
 app.use('/users', usersRouter)
+app.use('/*', errorRouter)
 
 // server listening
 app.listen(PORT, console.log(`Server runing on port: http://localhost:${PORT}`))

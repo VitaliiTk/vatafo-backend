@@ -47,4 +47,9 @@ User.prototype.comparePassword = async function (password) {
   return bcrypt.compare(password, this.password)
 }
 
-export { sequelize, User }
+// синхронизация модели User с базой данных vatafo
+User.sync(/* { force: true } */) // Очищает таблицу и пересоздает если указан параметр {force: true} если {alter: true} удалит не актуальные или поеменяет их типы. если ничего не указанно просто создает если таблицы нет или соед. к уже существующей
+  .then(() => console.log('База данных синхронизирована'))
+  .catch((err) => console.log('Ошибка синхронизации базы данных: ', err))
+
+export { User }
