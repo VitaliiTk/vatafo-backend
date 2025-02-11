@@ -2,7 +2,7 @@ import { Sequelize, DataTypes } from 'sequelize'
 import bcrypt from 'bcryptjs'
 
 const sequelize = new Sequelize(
-  'postgres://postgres:postgres@localhost:5433/postgres'
+  'postgres://postgres:postgres@localhost:5433/vatafo'
 )
 
 const User = sequelize.define('User', {
