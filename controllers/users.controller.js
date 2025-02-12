@@ -23,3 +23,19 @@ export const getUser = async (req, res) => {
     res.status(500).json({ error: 'Server error' })
   }
 }
+
+export const changeAvatar = async (req, res) => {
+  try {
+    const user = await User.findByPk(req.user.id)
+    const existingAvatar = user.avatar
+    // проверка на добавления уже существующего фото
+    if (existingAvatar === req.body.avatar) {
+      return res.send(user)
+    }
+    user.avatar = req.body.avatar
+    await user.save()
+    res.send(user) //  сука из за этого поля когда его не было после отправки фото фронт вис и навигация не работала на фронте до перезагрузки окна браузера, ответ нужен обязательно от сервера оказывается
+  } catch (error) {
+    console.log('оштбка обновления фото аватара')
+  }
+}
