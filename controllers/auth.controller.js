@@ -27,14 +27,12 @@ export const login = async (req, res) => {
   try {
     const user = await User.findOne({ where: { email } })
     if (!user) {
-      return res
-        .status(400)
-        .json({ error: 'Пользователь с таким Email не существует' })
+      return res.status(400).json({ error: 'incorect user data' })
     }
 
     const isMatch = await user.comparePassword(password)
     if (!isMatch) {
-      return res.status(400).json({ error: 'Неверный пароль' })
+      return res.status(400).json({ error: 'incorect user data' })
     }
 
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
