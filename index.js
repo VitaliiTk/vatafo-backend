@@ -8,6 +8,8 @@ import cors from 'cors'
 import usersRouter from './routes/user.routes.js'
 import authRouter from './routes/auth.routes.js'
 import errorRouter from './routes/error.routes.js'
+import postsRouter from './routes/posts.routes.js'
+import favoritesRouter from './routes/favorites.routes.js'
 
 const app = express()
 
@@ -22,6 +24,8 @@ app.use(express.json())
 // index routes
 app.use('/auth', authRouter)
 app.use('/users', usersRouter)
+app.use('/posts', postsRouter)
+app.use('/favorites', favoritesRouter)
 app.use('/*', errorRouter)
 
 // server listening

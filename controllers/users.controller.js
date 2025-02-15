@@ -13,6 +13,7 @@ export const getUser = async (req, res) => {
   try {
     const user = await User.findByPk(req.user.id)
     res.json({
+      id: user.id,
       username: user.username,
       email: user.email,
       role: user.role,
@@ -36,6 +37,6 @@ export const changeAvatar = async (req, res) => {
     await user.save()
     res.send(user) //  сука из за этого поля когда его не было после отправки фото фронт вис и навигация не работала на фронте до перезагрузки окна браузера, ответ нужен обязательно от сервера оказывается
   } catch (error) {
-    console.log('оштбка обновления фото аватара')
+    console.log('ошибка обновления фото аватара')
   }
 }
