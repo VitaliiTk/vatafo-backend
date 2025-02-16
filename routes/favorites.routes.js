@@ -1,5 +1,6 @@
 import express from 'express'
 
+import { authMiddleware } from '../middleware/auth.middleware.js'
 // controllers
 import {
   addFavorites,
@@ -8,7 +9,7 @@ import {
 
 const router = express.Router()
 
-router.post('/', addFavorites)
-router.get('/:id', getFavorites)
+router.post('/', authMiddleware, addFavorites)
+router.get('/', authMiddleware, getFavorites)
 
 export default router

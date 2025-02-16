@@ -1,4 +1,5 @@
-import { Post } from '../models/User.model.js'
+import { Post } from '../models/Post.js'
+import { User } from '../models/User.js'
 
 export async function postNewCar(req, res) {
   // console.log(req)
@@ -21,8 +22,31 @@ export async function postNewCar(req, res) {
 
 export async function getAllCar(req, res) {
   try {
-    const posts = await Post.findAll()
-    res.send(posts)
+    const posts = await Post.findAll({
+      include: {
+        model: User,
+        attributes: ['avatar', 'status'],
+      },
+    })
+    res.json(posts)
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export async function getUserPosts(req, res) {
+  console.log(req.user.id)
+  try {
+    const posts = await Post.findAll({
+      include: {
+        model: User,
+        attributes: ['avatar', 'status'],
+      },
+      where: {
+        user_id: req.user.id,
+      },
+    })
+    res.json(posts)
   } catch (error) {
     console.log(error)
   }
