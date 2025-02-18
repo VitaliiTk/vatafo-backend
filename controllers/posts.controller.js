@@ -17,12 +17,13 @@ export async function postNewCar(req, res) {
     money_symbol: moneySymbol,
     drive_length: ride,
   })
-  res.send('Ответ от post /posts')
+  res.json(post)
 }
 
 export async function getAllCar(req, res) {
   try {
     const posts = await Post.findAll({
+      order: [['createdAt', 'DESC']], // сортировка по дате создания
       include: {
         model: User,
         attributes: ['avatar', 'status'],
@@ -38,6 +39,7 @@ export async function getUserPosts(req, res) {
   console.log(req.user.id)
   try {
     const posts = await Post.findAll({
+      order: [['createdAt', 'DESC']], // сортировка по дате создания по убыванию (от новых к старым)
       include: {
         model: User,
         attributes: ['avatar', 'status'],
