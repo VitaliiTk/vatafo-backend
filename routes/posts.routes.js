@@ -12,7 +12,7 @@ import { authMiddleware } from '../middleware/auth.middleware.js'
 const router = express.Router()
 
 router.get('/', getAllCar)
-router.get('/:id', authMiddleware, getPostById)
+router.get('/:id', getPostById)
 router.post('/', authMiddleware, postNewCar)
 router.delete('/:id', authMiddleware, deletePost)
 router.put('/:id', authMiddleware, updateById)

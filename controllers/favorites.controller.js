@@ -18,6 +18,7 @@ export async function getFavorites(req, res) {
           attributes: [], // чтобы не выводить данные из модели Favorite
         }, // через модель Favorite (модель промежуточная)
       },
+      order: [[Post, Favorite, 'createdAt', 'DESC']], // Сортировка по дате добавления в избранное
     })
     res.json(data[0].Posts)
   } catch (error) {
@@ -27,7 +28,11 @@ export async function getFavorites(req, res) {
 
 // Добавить/удалить из избранного
 export async function addFavorites(req, res) {
-  const { user_id, post_id } = req.body
+  const user_id = req.user.id
+  const { post_id } = req.body
+
+  console.log(post_id, user_id)
+  console.log(req.body)
 
   try {
     const existingFavorite = await Favorite.findOne({
@@ -37,6 +42,7 @@ export async function addFavorites(req, res) {
       },
     })
     if (existingFavorite) {
+      console.log('Уже есть в избранном')
       await existingFavorite.destroy()
       res.json({ message: 'Удалено из избранного', isFavorite: false })
     } else {
@@ -48,5 +54,21 @@ export async function addFavorites(req, res) {
     }
   } catch (error) {
     res.status(500).json({ message: 'Ошибка при изменении избранного' })
+  }
+}
+
+export async function deleteFavorite(req, res) {
+  const { id } = req.params
+  const user_id = req.user.id
+  try {
+    await Favorite.destroy({
+      where: {
+        post_id: id,
+        user_id,
+      },
+    })
+    res.json({ message: 'Favorite deleted' })
+  } catch (error) {
+    console.log(error)
   }
 }
