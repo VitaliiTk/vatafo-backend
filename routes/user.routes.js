@@ -6,6 +6,7 @@ import {
   changeAvatar,
   getAllUsers,
   getUser,
+  getUserById,
 } from '../controllers/users.controller.js'
 
 // middlewares
@@ -16,5 +17,6 @@ const router = express.Router()
 // router.get('/', authMiddleware, getAllUsers)
 router.get('/me', authMiddleware, getUser)
 router.post('/avatar', authMiddleware, changeAvatar)
+router.get('/:id', getUserById)
 
 export default router

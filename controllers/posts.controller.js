@@ -93,6 +93,10 @@ export async function getPostById(req, res) {
       where: {
         id,
       },
+      include: {
+        model: User,
+        attributes: ['avatar', 'id', 'status', 'username'],
+      },
     })
     res.json(post)
   } catch (error) {

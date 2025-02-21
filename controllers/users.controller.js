@@ -1,3 +1,4 @@
+import { Post } from '../models/Post.js'
 import { User } from '../models/User.js'
 
 export const getAllUsers = async (_, res) => {
@@ -38,5 +39,22 @@ export const changeAvatar = async (req, res) => {
     res.send(user) //  сука из за этого поля когда его не было после отправки фото фронт вис и навигация не работала на фронте до перезагрузки окна браузера, ответ нужен обязательно от сервера оказывается
   } catch (error) {
     console.log('ошибка обновления фото аватара')
+  }
+}
+
+export const getUserById = async (req, res) => {
+  try {
+    const author = await Post.findAll({
+      where: {
+        user_id: req.params.id,
+      },
+      include: {
+        model: User,
+        attributes: ['id', 'username', 'avatar', 'createdAt'],
+      },
+    })
+    res.json(author)
+  } catch (error) {
+    res.status(500).json({ error: 'Server error' })
   }
 }
