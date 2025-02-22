@@ -3,7 +3,7 @@ import express from 'express'
 import 'dotenv/config'
 import morgan from 'morgan'
 import cors from 'cors'
-import { DBinit } from './models/index.js'
+import { startDB } from './models/index.js'
 
 // routes
 import usersRouter from './routes/user.routes.js'
@@ -33,7 +33,7 @@ app.use('/*', errorRouter)
 
 // server listening
 try {
-  DBinit()
+  startDB()
   app.listen(
     PORT,
     console.log(`Server runing on port: http://localhost:${PORT}`)
