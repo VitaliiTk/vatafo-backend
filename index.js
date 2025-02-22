@@ -31,6 +31,8 @@ app.use('/acount', acountPostsRouter)
 app.use('/favorites', favoritesRouter)
 app.use('/*', errorRouter)
 
+//TODO: Digital Ocean S3
+
 // server listening
 try {
   startDB()
