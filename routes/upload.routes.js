@@ -31,7 +31,7 @@ router.post('/', upload.array('images', 10), async (req, res) => {
         Key: fileName,
         Body: fileContent,
         ContentType: file.mimetype,
-        // ACL: 'public-read',
+        ACL: 'public-read',
         // Убираем ACL, если не требуется публичный доступ
       })
 
