@@ -1,7 +1,9 @@
 import { Post } from '../models/Post.js'
 import { User } from '../models/User.js'
 
-export async function postNewCar(req, res) {
+export const PostController = {}
+
+export async function addNew(req, res) {
   try {
     console.log(req.body)
 
