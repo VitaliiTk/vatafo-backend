@@ -8,8 +8,8 @@ const Post = sequelize.define('Post', {
     allowNull: false,
   },
   // images: {
-  //   type: DataTypes.ARRAY(DataTypes.STRING),
-  //   allowNull: false,
+  //   type: DataTypes.JSONB,
+  //   // allowNull: false,
   // },
   price: {
     type: DataTypes.FLOAT,
@@ -35,18 +35,34 @@ const Post = sequelize.define('Post', {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  gear: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  stearingWheel: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  drive: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  payMethod: {
+    type: DataTypes.ARRAY(DataTypes.STRING),
+    allowNull: false,
+  },
   drive_length: {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
-  // fuels: {
-  //   type: DataTypes.ARRAY(DataTypes.STRING),
-  //   allowNull: false,
-  // },
-  // pay_methods: {
-  //   type: DataTypes.ARRAY(DataTypes.STRING),
-  //   allowNull: false,
-  // },
+  fuels: {
+    type: DataTypes.ARRAY(DataTypes.STRING),
+    allowNull: false,
+  },
+  year: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
 })
 
 export { Post }

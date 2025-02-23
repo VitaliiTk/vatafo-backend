@@ -32,6 +32,8 @@ const User = sequelize.define('User', {
   avatar: {
     type: DataTypes.STRING,
     allowNull: true,
+    defaultValue:
+      'https://rocket-league.com/content/media/items/avatar/220px/1b16f7679a1638965994.png',
   },
 })
 
