@@ -2,20 +2,15 @@ import { Post } from '../models/Post.js'
 import { User } from '../models/User.js'
 
 export async function postNewCar(req, res) {
-  console.log(req.body)
-  const { image, info, category, city, price, moneySymbol, ride } = req.body
+  try {
+    console.log(req.body)
 
-  const post = await Post.create({
-    main_image: image,
-    info,
-    category,
-    city,
-    price,
-    user_id: req.user.id,
-    money_symbol: moneySymbol,
-    drive_length: ride,
-  })
-  res.json(post)
+    const newPost = await Post.create({ ...req.body })
+
+    res.json({ message: 'new post added successefully' })
+  } catch (error) {
+    res.json(error)
+  }
 }
 
 export async function getAllCar(req, res) {
