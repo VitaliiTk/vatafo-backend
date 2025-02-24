@@ -4,13 +4,15 @@ import { User } from '../models/User.js'
 export const PostController = {
   async addNew(req, res) {
     try {
-      console.log(req.body)
+      const newPost = await Post.create({
+        ...req.body,
+        main_image: req.imageUrl,
+      })
 
-      const newPost = await Post.create({ ...req.body })
-
-      res.json({ message: 'new post added successefully' })
+      res.json({ message: 'new post added successefully', newPost })
     } catch (error) {
-      res.json(error)
+      console.error('Ошибка сохранения продукта:', error)
+      res.status(500).json({ error: 'Ошибка сервера' })
     }
   },
   async getAllCar(req, res) {
