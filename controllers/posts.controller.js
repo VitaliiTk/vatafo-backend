@@ -1,5 +1,7 @@
+import { DeleteObjectCommand } from '@aws-sdk/client-s3'
 import { Post } from '../models/Post.js'
 import { User } from '../models/User.js'
+import s3 from '../config/s3.js'
 
 export const PostController = {
   async addNew(req, res) {
@@ -47,19 +49,51 @@ export const PostController = {
       console.log(error)
     }
   },
+
+  // функция удаления поста по его id
   async deletePost(req, res) {
-    const { id } = req.params
     try {
-      await Post.destroy({
-        where: {
-          id,
-        },
-      })
+      const { id } = req.params
+      let { fileKey } = req.body
+
+      // если в теле req нету imageName то отправить ответ с текстом ошибки
+      if (!fileKey || !id)
+        return res.status(400).json({ error: 'imageName и id обязательны' })
+
+      // чтобы удалить из s3 нужно убрать из имени файла начальный путь оставить толко относительный бакета иначе не будет удалятся
+      // Убираем URL из fileKey, если он есть
+      if (fileKey.startsWith('http')) {
+        try {
+          const url = new URL(fileKey)
+          fileKey = url.pathname.substring(1)
+        } catch (error) {
+          return res.status(400).json({ error: 'Неверный формат fileKey' })
+        }
+      }
+
+      console.log('Удаляем файл из S3:', fileKey)
+      console.log('Удаляем пост с id:', id)
+
+      // Удаление из S3 и БД одновременно
+      await Promise.all([
+        s3.send(
+          new DeleteObjectCommand({
+            Bucket: process.env.AWS_BUCKET_NAME,
+            Key: fileKey,
+          })
+        ),
+        Post.destroy({ where: { id } }),
+      ])
+
       res.json({ message: 'Post deleted' })
     } catch (error) {
-      console.log(error)
+      // выввод ошибки
+      console.error('Ошибка удаления:', error)
+      res.status(500).json({ error: 'Ошибка удаления' })
     }
   },
+  // завершение функциии удаления поста по его id
+
   async updateById(req, res) {
     const { id } = req.params
     const allBody = req.body
