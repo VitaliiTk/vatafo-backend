@@ -17,6 +17,7 @@ export const PostController = {
       res.status(500).json({ error: 'Ошибка сервера' })
     }
   },
+
   async getAllCar(req, res) {
     try {
       const posts = await Post.findAll({
