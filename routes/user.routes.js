@@ -12,13 +12,7 @@ const router = express.Router()
 
 // router.get('/', authMiddleware, UserController.getAll)
 router.get('/me', authMiddleware, UserController.getUserByJWT)
-router.post(
-  '/avatar',
-  authMiddleware,
-  uploadSingle,
-  uploadImage,
-  UserController.update
-)
+router.post('/me', authMiddleware, uploadSingle, UserController.update)
 router.get('/:id', UserController.getById)
 
 export default router

@@ -1,3 +1,5 @@
+import { DeleteObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3'
+import s3 from '../config/s3.js'
 import { Post } from '../models/Post.js'
 import { User } from '../models/User.js'
 
@@ -25,31 +27,77 @@ export const UserController = {
       res.status(500).json({ error: 'Server error' })
     }
   },
+  // =========================================================
 
+  // =========================================================
   // обновить дынные пользователя
   async update(req, res) {
     try {
-      const user = await User.findByPk(req.user.id)
-      const existingAvatar = user.avatar
-      // проверка на добавления уже существующего фото
-      if (existingAvatar === req.imageUrl) {
-        return res.json(user)
+      if (!req.file && !req.body.username && !req.body.email) {
+        return res.json({
+          message: 'image, username, email обязательные поля ',
+        })
       }
-      user.avatar = req.imageUrl
+
+      // 1. Найти старый fileKey в базе данных
+      const user = await User.findByPk(req.user.id)
+      if (!user) {
+        return res.status(404).json({ error: 'User не найден' })
+      }
+
+      let oldFileKey = user.avatar
+
+      if (oldFileKey.startsWith('http')) {
+        try {
+          const url = new URL(oldFileKey)
+          oldFileKey = url.pathname.substring(1)
+        } catch (error) {
+          return res.status(400).json({ error: 'Неверный формат fileKey' })
+        }
+      }
+
+      // 2. Удалить старую картинку из S3
+      if (oldFileKey) {
+        await s3.send(
+          new DeleteObjectCommand({
+            Bucket: process.env.AWS_BUCKET_NAME,
+            Key: oldFileKey,
+          })
+        )
+        console.log('Удалена старая картинка:', oldFileKey)
+      }
+
+      // 3. Загрузить новую картинку
+      const newFileKey = `${Date.now()}-${req.file.originalname}`
+      await s3.send(
+        new PutObjectCommand({
+          Bucket: process.env.AWS_BUCKET_NAME,
+          Key: newFileKey,
+          Body: req.file.buffer,
+          ContentType: req.file.mimetype,
+          ACL: 'public-read', // доступ к файлам обязательно
+        })
+      )
+
+      // 4. Обновить запись в БД
+      const s3ImageURL = `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${newFileKey}`
+
+      user.avatar = s3ImageURL
+      user.username = req.body.username
+      user.email = req.body.email
+
       await user.save()
 
-      res.json({
-        id: user.id,
-        username: user.username,
-        email: user.email,
-        avatar: user.avatar,
-        status: user.status,
-      }) //  сука из за этого поля когда его не было после отправки фото фронт вис и навигация не работала на фронте до перезагрузки окна браузера, ответ нужен обязательно от сервера оказывается
+      // ответ от сервера
+      res.json({ message: 'profile successefully update' }) // test
     } catch (error) {
       console.log('ошибка обновления фото аватара')
       res.status(500).json({ error: 'Server error' })
     }
   },
+  // ==============================================================
+
+  // ==============================================================
   async getById(req, res) {
     try {
       const author = await Post.findAll({
