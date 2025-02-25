@@ -6,14 +6,6 @@ import s3 from '../config/s3.js'
 
 const upload = multer({ storage: multer.memoryStorage() })
 
-// const s3 = new S3Client({
-//   region: process.env.AWS_REGION,
-//   credentials: {
-//     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-//     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-//   },
-// })
-
 // Middleware для загрузки файла в S3
 export const uploadImage = async (req, res, next) => {
   console.log('req.file:', req.file)
