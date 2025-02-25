@@ -33,18 +33,24 @@ export const UserController = {
   // обновить дынные пользователя
   async update(req, res) {
     try {
-      if (!req.file && !req.body.username && !req.body.email) {
+      if (!req.file) return res.json({ message: 'image не заполнен' })
+      if (!req.body.username)
         return res.json({
-          message: 'image, username, email обязательные поля ',
+          message: 'username не заполнен',
         })
-      }
 
-      // 1. Найти старый fileKey в базе данных
+      if (!req.body.email)
+        return res.json({
+          message: 'email не заполнен',
+        })
+
+      // находим loged User в базе
       const user = await User.findByPk(req.user.id)
       if (!user) {
         return res.status(404).json({ error: 'User не найден' })
       }
 
+      // 1. Найти старый fileKey в базе данных
       let oldFileKey = user.avatar
 
       if (oldFileKey.startsWith('http')) {
