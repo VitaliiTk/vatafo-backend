@@ -17,7 +17,7 @@ router.post(
   uploadImage,
   PostController.addNew
 )
-router.put('/:id', authMiddleware, PostController.updateById)
+router.put('/:id', authMiddleware, uploadSingle, PostController.updateById)
 router.delete('/:id', authMiddleware, PostController.deletePost)
 
 export default router

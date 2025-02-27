@@ -4,6 +4,7 @@ import { User } from '../models/User.js'
 import s3 from '../config/s3.js'
 
 export const PostController = {
+  // добавить ноый пост
   async addNew(req, res) {
     try {
       const newPost = await Post.create({
@@ -18,6 +19,7 @@ export const PostController = {
     }
   },
 
+  // достать все посты
   async getAllCar(req, res) {
     try {
       const posts = await Post.findAll({
@@ -32,6 +34,8 @@ export const PostController = {
       console.log(error)
     }
   },
+
+  // достать все посты пользователя
   async getUserPosts(req, res) {
     console.log(req.user.id)
     try {
@@ -51,7 +55,7 @@ export const PostController = {
     }
   },
 
-  // функция удаления поста по его id
+  // удаления поста по id
   async deletePost(req, res) {
     try {
       const { id } = req.params
@@ -95,25 +99,32 @@ export const PostController = {
   },
   // завершение функциии удаления поста по его id
 
+  // обновить пост по id
+  // TODO: пересохранение в S3 написать
   async updateById(req, res) {
     const { id } = req.params
-    const allBody = req.body
-    console.log(allBody)
+    console.log(req.file)
+    console.log(req.body)
     try {
       const post = await Post.findOne({
         where: {
           id,
         },
       })
-      post.info = allBody.info
-      post.price = allBody.price
-      post.main_image = allBody.main_image
+
+      post.info = req.body.info
+      post.price = req.body.price
+      post.drive_length = req.body.drive_length
+      post.tel = req.body.tel
+      // post.main_image = req.imageUrl
       await post.save()
       res.json(post)
     } catch (error) {
       console.log(error)
     }
   },
+
+  // достать один пост по id
   async getPostById(req, res) {
     const { id } = req.params
     try {

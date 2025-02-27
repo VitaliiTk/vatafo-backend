@@ -63,6 +63,13 @@ const Post = sequelize.define('Post', {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  tel: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      isNumeric: true, // Проверяет, что значение состоит только из цифр
+    },
+  },
 })
 
 export { Post }

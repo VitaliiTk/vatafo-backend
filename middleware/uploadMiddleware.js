@@ -4,7 +4,10 @@ import 'dotenv/config'
 
 import s3 from '../config/s3.js'
 
-const upload = multer({ storage: multer.memoryStorage() })
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 1000000 },
+})
 
 // Middleware для загрузки файла в S3
 export const uploadImage = async (req, res, next) => {

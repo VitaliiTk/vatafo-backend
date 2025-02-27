@@ -2,6 +2,7 @@ import { DeleteObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3'
 import s3 from '../config/s3.js'
 import { Post } from '../models/Post.js'
 import { User } from '../models/User.js'
+// import { s3Service } from '../services/s3.service.js'
 
 export const UserController = {
   async getAll(_, res) {
@@ -33,7 +34,16 @@ export const UserController = {
   // обновить дынные пользователя
   async update(req, res) {
     try {
-      if (!req.file) return res.json({ message: 'image не заполнен' })
+      if (!req.file) {
+        return res.json({ message: 'image не заполнен' })
+      }
+
+      //TODO: переделать с помощью filter для multer есть видео на youtube
+      if (req.file.mimetype !== 'image/jpeg')
+        return res.json({
+          message: 'файл с таким расширением не возможно загрузить',
+        })
+
       if (!req.body.username)
         return res.json({
           message: 'username не заполнен',
@@ -50,9 +60,7 @@ export const UserController = {
         return res.status(404).json({ error: 'User не найден' })
       }
 
-      // 1. Найти старый fileKey в базе данных
       let oldFileKey = user.avatar
-
       if (oldFileKey.startsWith('http')) {
         try {
           const url = new URL(oldFileKey)
@@ -97,7 +105,7 @@ export const UserController = {
       // ответ от сервера
       res.json({ message: 'profile successefully update' }) // test
     } catch (error) {
-      console.log('ошибка обновления фото аватара')
+      console.log('ошибка обновления профиля')
       res.status(500).json({ error: 'Server error' })
     }
   },
