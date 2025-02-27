@@ -5,7 +5,6 @@ import { PostController } from '../controllers/posts.controller.js'
 // middlewares
 import { authMiddleware } from '../middleware/auth.middleware.js'
 import { uploadSingle } from '../middleware/uploadMiddleware.js'
-import { s3Service } from '../services/s3.service.js'
 
 const router = express.Router()
 

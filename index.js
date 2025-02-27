@@ -12,7 +12,6 @@ import errorRouter from './routes/error.routes.js'
 import postsRouter from './routes/posts.routes.js'
 import favoritesRouter from './routes/favorites.routes.js'
 import acountPostsRouter from './routes/acount.routes.js'
-import uploadRoute from './routes/upload.routes.js'
 
 const app = express()
 
@@ -30,18 +29,11 @@ app.use('/users', usersRouter)
 app.use('/posts', postsRouter)
 app.use('/acount', acountPostsRouter)
 app.use('/favorites', favoritesRouter)
-app.use('/upload', uploadRoute)
 app.use('/*', errorRouter)
 
-//TODO: Digital Ocean S3
-
-// server listening
 try {
   startDB()
-  app.listen(
-    PORT,
-    console.log(`Server runing on port: http://localhost:${PORT}`)
-  )
+  app.listen(PORT, console.log(`Server runing on port: http://localhost:${PORT}`))
 } catch (error) {
   console.log(error)
 }
