@@ -10,9 +10,15 @@ export const PostController = {
   // добавить ноый пост
   async addNew(req, res) {
     try {
+      const file = req.file
+
+      const newImageS3Url = await urlUtils.generateNewKey(file.originalname)
+      await s3Service.addOneImage(file.buffer, process.env.AWS_BUCKET_NAME, newImageS3Url, file.mimetype)
+      const publicS3Url = await urlUtils.getPublicUrlS3(newImageS3Url)
+
       const newPost = await Post.create({
         ...req.body,
-        main_image: req.imageS3Url
+        main_image: publicS3Url
       })
 
       res.json({ message: 'new post added successefully', newPost })
@@ -57,40 +63,25 @@ export const PostController = {
       console.log(error)
     }
   },
-
+  // ====================================================
+  // ====================================================
+  // ====================================================
+  // ====================================================
+  // ====================================================
   // удаления поста по id
   async deletePost(req, res) {
     try {
       const { id } = req.params
-      let { fileKey } = req.body
 
-      // если в теле req нету imageName то отправить ответ с текстом ошибки
-      if (!fileKey || !id) return res.status(400).json({ error: 'imageName и id обязательны' })
+      if (!id) return res.status(400).json({ error: 'id обязательны' })
 
-      // чтобы удалить из s3 нужно убрать из имени файла начальный путь оставить толко относительный бакета иначе не будет удалятся
-      // Убираем URL из fileKey, если он есть
-      if (fileKey.startsWith('http')) {
-        try {
-          const url = new URL(fileKey)
-          fileKey = url.pathname.substring(1)
-        } catch (error) {
-          return res.status(400).json({ error: 'Неверный формат fileKey' })
-        }
-      }
-
-      console.log('Удаляем файл из S3:', fileKey)
-      console.log('Удаляем пост с id:', id)
+      // find in post DB by id from params
+      const post = await Post.findByPk(id)
+      const imageFromPost = post.main_image
+      const refactoredImageUrlForS3 = await urlUtils.refactoreUrl(imageFromPost)
 
       // Удаление из S3 и БД одновременно
-      await Promise.all([
-        s3.send(
-          new DeleteObjectCommand({
-            Bucket: process.env.AWS_BUCKET_NAME,
-            Key: fileKey
-          })
-        ),
-        Post.destroy({ where: { id } })
-      ])
+      await Promise.all([s3Service.deleteOneImage(refactoredImageUrlForS3), Post.destroy({ where: { id } })])
 
       res.json({ message: 'Post deleted' })
     } catch (error) {

@@ -10,8 +10,6 @@ export const s3 = new S3Client({
 })
 
 export const s3Service = {
-  async deleteOldAndPasteNewImage() {},
-
   // добавляем одну картинку в S3
   async addOneImage(buffer, bucketName, key, fileType) {
     try {
@@ -31,9 +29,6 @@ export const s3Service = {
       console.error('Ошибка загрузки:', error)
     }
   },
-
-  async addManyImages() {},
-
   // =============================================================
   // =============================================================
   // =============================================================
@@ -42,9 +37,9 @@ export const s3Service = {
   // =============================================================
   // =============================================================
   // удаление из AWS S3
-  async deleteOneImage(bucketName, key) {
+  async deleteOneImage(key) {
     try {
-      const command = new DeleteObjectCommand({ Bucket: bucketName, Key: key })
+      const command = new DeleteObjectCommand({ Bucket: process.env.AWS_BUCKET_NAME, Key: key })
       await s3.send(command)
       console.log(`Файл ${key} удалён`)
     } catch (error) {
