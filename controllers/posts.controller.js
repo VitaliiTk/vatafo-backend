@@ -106,19 +106,9 @@ export const PostController = {
     console.log(req.file)
     console.log(req.body)
     try {
-      const post = await Post.findOne({
-        where: {
-          id,
-        },
-      })
+      await Post.update({ ...req.body }, { where: { id } }) // обновляем пост * не возвращает по умолчанию ничего
 
-      post.info = req.body.info
-      post.price = req.body.price
-      post.drive_length = req.body.drive_length
-      post.tel = req.body.tel
-      // post.main_image = req.imageUrl
-      await post.save()
-      res.json(post)
+      res.json({ message: 'update success' })
     } catch (error) {
       console.log(error)
     }

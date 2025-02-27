@@ -6,7 +6,7 @@ import s3 from '../config/s3.js'
 
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 1000000 },
+  limits: { fileSize: 1000000 }
 })
 
 // Middleware для загрузки файла в S3
@@ -22,7 +22,7 @@ export const uploadImage = async (req, res, next) => {
       Key: fileName,
       Body: file.buffer,
       ContentType: file.mimetype,
-      ACL: 'public-read', // Доступность файла для всех очень важно чтобы отображались не сломаные картинки, это дает доступ permissions на чтение
+      ACL: 'public-read' // Доступность файла для всех очень важно чтобы отображались не сломаные картинки, это дает доступ permissions на чтение
     }
 
     await s3.send(new PutObjectCommand(uploadParams))
