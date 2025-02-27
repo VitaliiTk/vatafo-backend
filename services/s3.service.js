@@ -13,31 +13,42 @@ export const s3Service = {
   async deleteOldAndPasteNewImage() {},
 
   // добавляем одну картинку в S3
-  async addOneImage(req, res, next) {
+  async addOneImage(buffer, bucketName, key, fileType) {
     try {
-      if (!req.file) return next() // Если файла нет, просто продолжаем
-
-      const file = req.file
-      const fileName = `${Date.now()}-${file.originalname}`
       const uploadParams = {
-        Bucket: process.env.AWS_BUCKET_NAME,
-        Key: fileName,
-        Body: file.buffer,
-        ContentType: file.mimetype,
-        ACL: 'public-read' // Доступность файла для всех очень важно чтобы отображались не сломаные картинки, это дает доступ permissions на чтение
+        Bucket: bucketName,
+        Key: key,
+        Body: buffer,
+        ContentType: fileType,
+        ACL: 'public-read'
       }
 
-      await s3.send(new PutObjectCommand(uploadParams))
+      const command = new PutObjectCommand(uploadParams)
+      const response = await s3.send(command)
 
-      req.imageS3Url = `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileName}`
-
-      next()
+      console.log('Файл загружен:', response)
     } catch (error) {
-      console.error('Ошибка загрузки в S3:', error)
-      res.status(500).json({ error: 'Ошибка загрузки изображения' })
+      console.error('Ошибка загрузки:', error)
     }
   },
 
   async addManyImages() {},
-  async deleteOneImage() {}
+
+  // =============================================================
+  // =============================================================
+  // =============================================================
+  // =============================================================
+  // =============================================================
+  // =============================================================
+  // =============================================================
+  // удаление из AWS S3
+  async deleteOneImage(bucketName, key) {
+    try {
+      const command = new DeleteObjectCommand({ Bucket: bucketName, Key: key })
+      await s3.send(command)
+      console.log(`Файл ${key} удалён`)
+    } catch (error) {
+      console.error('Ошибка удаления:', error)
+    }
+  }
 }

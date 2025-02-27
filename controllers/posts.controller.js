@@ -3,6 +3,8 @@ import { Post } from '../models/Post.js'
 import { User } from '../models/User.js'
 import s3 from '../config/s3.js'
 import { s3Service } from '../services/s3.service.js'
+import 'dotenv/config'
+import { urlUtils } from '../utils/url.utils.js'
 
 export const PostController = {
   // добавить ноый пост
@@ -111,18 +113,28 @@ export const PostController = {
   // TODO: пересохранение в S3 написать
   async updateById(req, res) {
     const postId = req.params.id
-    const newImage = req.file?.buffer
+    const buffer = req.file?.buffer
     console.log(req.file)
     console.log(req.body)
     try {
-      // await Post.update({ ...req.body }, { where: { id: postId } }) // обновляем пост * не возвращает по умолчанию ничего
-
       const post = await Post.findByPk(postId) // находим пост в базе по primary key
 
-      // если нет такого поста
-      if (!post) {
-        console.log('Пост не найден')
-        return
+      // delete old image from s3 and add new in s3 and in DB
+      if (buffer) {
+        let oldImage = post.main_image
+
+        oldImage = await urlUtils.refactoreUrl(oldImage)
+
+        s3Service.deleteOneImage(process.env.AWS_BUCKET_NAME, oldImage)
+
+        let newImageKey = await urlUtils.generateNewKey(req.file.originalname)
+        let fileType = req.file.mimetype
+        await s3Service.addOneImage(buffer, process.env.AWS_BUCKET_NAME, newImageKey, fileType)
+
+        const newS3ImageUrl = await urlUtils.getPublicUrlS3(newImageKey)
+
+        post.main_image = newS3ImageUrl
+        await post.save()
       }
 
       Object.assign(post, { ...req.body }) // Обновляем поля в посте при помощи деструктуризации req.body
