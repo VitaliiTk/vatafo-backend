@@ -2,6 +2,7 @@ import { DeleteObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3'
 import s3 from '../config/s3.js'
 import { Post } from '../models/Post.js'
 import { User } from '../models/User.js'
+import { Image } from '../models/Image.js'
 // import { s3Service } from '../services/s3.service.js'
 
 export const UserController = {
@@ -118,10 +119,16 @@ export const UserController = {
         where: {
           user_id: req.params.id
         },
-        include: {
-          model: User,
-          attributes: ['id', 'username', 'avatar', 'createdAt']
-        }
+        include: [
+          {
+            model: User,
+            attributes: ['id', 'username', 'avatar', 'createdAt']
+          },
+          {
+            model: Image,
+            attributes: ['image_url']
+          }
+        ]
       })
       res.json(author)
     } catch (error) {

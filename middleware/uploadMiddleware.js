@@ -6,4 +6,5 @@ const upload = multer({
   limits: { fileSize: 1000000 }
 })
 
-export const uploadSingle = upload.single('image') // Middleware для multer
+export const uploadSingle = upload.single('image') // single file upload
+export const uploadArray = upload.array('images[]', 10) // array of files upload

@@ -3,73 +3,65 @@ import sequelize from '../config/database.js'
 
 // !нужно сделать модель обьявления
 const Post = sequelize.define('Post', {
-  main_image: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  // images: {
-  //   type: DataTypes.JSONB,
-  //   // allowNull: false,
-  // },
   price: {
     type: DataTypes.FLOAT,
-    allowNull: false,
+    allowNull: false
   },
   category: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: false
   },
   info: {
     type: DataTypes.TEXT,
-    allowNull: false,
+    allowNull: false
   },
   user_id: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    allowNull: false
   },
   city: {
     type: DataTypes.TEXT,
-    allowNull: false,
+    allowNull: false
   },
   money_symbol: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: false
   },
   gear: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: false
   },
   stearingWheel: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: false
   },
   drive: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: false
   },
   payMethod: {
     type: DataTypes.ARRAY(DataTypes.STRING),
-    allowNull: false,
+    allowNull: false
   },
   drive_length: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    allowNull: false
   },
   fuels: {
     type: DataTypes.ARRAY(DataTypes.STRING),
-    allowNull: false,
+    allowNull: false
   },
   year: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: false
   },
   tel: {
     type: DataTypes.STRING,
     allowNull: false,
     validate: {
-      isNumeric: true, // Проверяет, что значение состоит только из цифр
-    },
-  },
+      isNumeric: true // Проверяет, что значение состоит только из цифр
+    }
+  }
 })
 
 export { Post }

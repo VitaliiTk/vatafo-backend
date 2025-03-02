@@ -5,6 +5,7 @@ import s3 from '../config/s3.js'
 import { s3Service } from '../services/s3.service.js'
 import 'dotenv/config'
 import { urlUtils } from '../utils/url.utils.js'
+import { Image } from '../models/Image.js'
 
 export const PostController = {
   // ===========================================================================================================
@@ -13,16 +14,28 @@ export const PostController = {
   // добавить ноый пост
   async addNew(req, res) {
     try {
-      const file = req.file
-
-      const newImageS3Url = await urlUtils.generateNewKey(file.originalname)
-      await s3Service.addOneImage(file.buffer, process.env.AWS_BUCKET_NAME, newImageS3Url, file.mimetype)
-      const publicS3Url = await urlUtils.getPublicUrlS3(newImageS3Url)
+      // const file = req.file
+      const user_id = req.user.id
+      const mainImage = req.files[0]
+      const images = req.files
+      console.log(req.body)
+      console.log(images)
 
       const newPost = await Post.create({
-        ...req.body,
-        main_image: publicS3Url
+        ...req.body
       })
+      //TODO: one image from images must be upload in DB table posts in main_image column
+
+      //TODO: map images and upload in S3, then return url from s3 and write in DB images table
+      await Promise.all(
+        images.map(async (image, index) => {
+          const newImageS3Url = await urlUtils.generateNewKey(image.originalname)
+          await s3Service.addOneImage(image.buffer, process.env.AWS_BUCKET_NAME, newImageS3Url, image.mimetype)
+          const publicS3Url = await urlUtils.getPublicUrlS3(newImageS3Url)
+
+          await Image.create({ user_id, post_id: newPost.id, image_url: publicS3Url })
+        })
+      )
 
       res.json({ message: 'new post added successefully', newPost })
     } catch (error) {
@@ -46,10 +59,16 @@ export const PostController = {
     try {
       const posts = await Post.findAll({
         order: [['createdAt', 'DESC']], // сортировка по дате создания
-        include: {
-          model: User,
-          attributes: ['avatar', 'status']
-        }
+        include: [
+          {
+            model: User,
+            attributes: ['avatar', 'status']
+          },
+          {
+            model: Image,
+            attributes: ['image_url']
+          }
+        ]
       })
       res.json(posts)
     } catch (error) {
@@ -75,10 +94,16 @@ export const PostController = {
     try {
       const posts = await Post.findAll({
         order: [['createdAt', 'DESC']], // сортировка по дате создания по убыванию (от новых к старым)
-        include: {
-          model: User,
-          attributes: ['avatar', 'status']
-        },
+        include: [
+          {
+            model: User,
+            attributes: ['avatar', 'status']
+          },
+          {
+            model: Image,
+            attributes: ['image_url']
+          }
+        ],
         where: {
           user_id: req.user.id
         }
@@ -102,11 +127,18 @@ export const PostController = {
 
       // find in post DB by id from params
       const post = await Post.findByPk(id)
-      const imageFromPost = post.main_image
-      const refactoredImageUrlForS3 = await urlUtils.refactoreUrl(imageFromPost)
+      // find all post images in Image table and delete
+      const allPostImages = await Image.findAll({ where: { post_id: id } })
+      await Promise.all(
+        allPostImages.map(async (image) => {
+          const refactoredImageUrlForS3 = await urlUtils.refactoreUrl(image.image_url)
+          await s3Service.deleteOneImage(refactoredImageUrlForS3)
+          await Image.destroy({ where: { id: image.id } })
+        })
+      )
+      await post.destroy()
 
       // Удаление из S3 и БД одновременно
-      await Promise.all([s3Service.deleteOneImage(refactoredImageUrlForS3), Post.destroy({ where: { id } })])
 
       res.json({ message: 'Post deleted' })
     } catch (error) {
@@ -126,7 +158,8 @@ export const PostController = {
   // ==========================================================
 
   // обновить пост по id
-  // TODO: пересохранение в S3 написать
+  // TODO: нужно также сделать загрузку массива картинок в базу и в S3
+  // FIXME: покачто ошибка из за не совпадающих полей от клиента и только один файл
   async updateById(req, res) {
     const postId = req.params.id
     const buffer = req.file?.buffer
@@ -179,10 +212,16 @@ export const PostController = {
         where: {
           id
         },
-        include: {
-          model: User,
-          attributes: ['avatar', 'id', 'status', 'username']
-        }
+        include: [
+          {
+            model: User,
+            attributes: ['avatar', 'id', 'status', 'username']
+          },
+          {
+            model: Image,
+            attributes: ['image_url']
+          }
+        ]
       })
       res.json(post)
     } catch (error) {

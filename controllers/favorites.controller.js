@@ -1,4 +1,5 @@
 import { Favorite } from '../models/Favorite.js'
+import { Image } from '../models/Image.js'
 import { Post } from '../models/Post.js'
 import { User } from '../models/User.js'
 
@@ -9,18 +10,24 @@ export async function getFavorites(req, res) {
       where: { id: req.user.id },
       include: {
         model: Post,
-        include: {
-          model: User,
-          attributes: ['avatar', 'status'],
-        },
+        include: [
+          {
+            model: User,
+            attributes: ['avatar', 'status']
+          },
+          {
+            model: Image, // Добавляем таблицу Image
+            attributes: ['image_url'] // Укажи нужные поля
+          }
+        ],
         through: {
           Favorite,
-          attributes: [], // чтобы не выводить данные из модели Favorite
-        }, // через модель Favorite (модель промежуточная)
+          attributes: [] // чтобы не выводить данные из модели Favorite
+        } // через модель Favorite (модель промежуточная)
       },
-      order: [[Post, Favorite, 'createdAt', 'DESC']], // Сортировка по дате добавления в избранное
+      order: [[Post, Favorite, 'createdAt', 'DESC']] // Сортировка по дате добавления в избранное
     })
-    res.json(data[0].Posts)
+    res.json(data[0]?.Posts || []) // Добавил защиту, если нет избранных постов
   } catch (error) {
     res.status(500).json({ message: 'Ошибка при получении избранного' })
   }
@@ -38,8 +45,8 @@ export async function addFavorites(req, res) {
     const existingFavorite = await Favorite.findOne({
       where: {
         user_id,
-        post_id,
-      },
+        post_id
+      }
     })
     if (existingFavorite) {
       console.log('Уже есть в избранном')
@@ -48,7 +55,7 @@ export async function addFavorites(req, res) {
     } else {
       await Favorite.create({
         user_id,
-        post_id,
+        post_id
       })
       res.json({ message: 'Добавлено в избранное', isFavorite: true })
     }
@@ -64,8 +71,8 @@ export async function deleteFavorite(req, res) {
     await Favorite.destroy({
       where: {
         post_id: id,
-        user_id,
-      },
+        user_id
+      }
     })
     res.json({ message: 'Favorite deleted' })
   } catch (error) {
