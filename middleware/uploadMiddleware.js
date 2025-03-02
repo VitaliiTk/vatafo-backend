@@ -3,7 +3,7 @@ import 'dotenv/config'
 
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 1000000 }
+  limits: { fileSize: 10000000 }
 })
 
 export const uploadSingle = upload.single('image') // Middleware для multer
