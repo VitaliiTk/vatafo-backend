@@ -17,8 +17,8 @@ export const s3Service = {
         Bucket: bucketName,
         Key: key,
         Body: buffer,
-        ContentType: fileType,
-        ACL: 'public-read'
+        ContentType: fileType
+        // ACL: 'public-read'
       }
 
       const command = new PutObjectCommand(uploadParams)

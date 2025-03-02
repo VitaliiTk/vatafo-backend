@@ -22,7 +22,7 @@ export const UserController = {
         email: user.email,
         role: user.role,
         avatar: user.avatar,
-        status: user.status,
+        status: user.status
       })
     } catch (error) {
       res.status(500).json({ error: 'Server error' })
@@ -41,17 +41,17 @@ export const UserController = {
       //TODO: переделать с помощью filter для multer есть видео на youtube
       if (req.file.mimetype !== 'image/jpeg')
         return res.json({
-          message: 'файл с таким расширением не возможно загрузить',
+          message: 'файл с таким расширением не возможно загрузить'
         })
 
       if (!req.body.username)
         return res.json({
-          message: 'username не заполнен',
+          message: 'username не заполнен'
         })
 
       if (!req.body.email)
         return res.json({
-          message: 'email не заполнен',
+          message: 'email не заполнен'
         })
 
       // находим loged User в базе
@@ -75,7 +75,7 @@ export const UserController = {
         await s3.send(
           new DeleteObjectCommand({
             Bucket: process.env.AWS_BUCKET_NAME,
-            Key: oldFileKey,
+            Key: oldFileKey
           })
         )
         console.log('Удалена старая картинка:', oldFileKey)
@@ -88,8 +88,8 @@ export const UserController = {
           Bucket: process.env.AWS_BUCKET_NAME,
           Key: newFileKey,
           Body: req.file.buffer,
-          ContentType: req.file.mimetype,
-          ACL: 'public-read', // доступ к файлам обязательно
+          ContentType: req.file.mimetype
+          //ACL: 'public-read', // доступ к файлам обязательно
         })
       )
 
@@ -116,16 +116,16 @@ export const UserController = {
     try {
       const author = await Post.findAll({
         where: {
-          user_id: req.params.id,
+          user_id: req.params.id
         },
         include: {
           model: User,
-          attributes: ['id', 'username', 'avatar', 'createdAt'],
-        },
+          attributes: ['id', 'username', 'avatar', 'createdAt']
+        }
       })
       res.json(author)
     } catch (error) {
       res.status(500).json({ error: 'Server error' })
     }
-  },
+  }
 }
