@@ -215,7 +215,7 @@ export const PostController = {
           },
           {
             model: Image,
-            attributes: ['image_url']
+            attributes: ['image_url', 'id']
           }
         ]
       })
