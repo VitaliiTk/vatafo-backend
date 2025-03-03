@@ -223,5 +223,21 @@ export const PostController = {
     } catch (error) {
       console.log(error)
     }
+  },
+
+  // =============================================================
+  // =============================================================
+  // =============================================================
+  // delete image by id
+  async deleteImageById(req, res) {
+    const image_id = req.params.id
+    try {
+      await Image.destroy({ where: { id: image_id } })
+
+      res.json({ message: `image with id: ${image_id} delete success` })
+    } catch (error) {
+      console.log(error)
+      res.status(500).json(error)
+    }
   }
 }

@@ -13,5 +13,6 @@ router.get('/:id', PostController.getPostById)
 router.post('/', authMiddleware, uploadArray, PostController.addNew)
 router.put('/:id', authMiddleware, uploadArray, PostController.updateById)
 router.delete('/:id', authMiddleware, PostController.deletePost)
+router.delete('/delete-image/:id', authMiddleware, PostController.deleteImageById)
 
 export default router
