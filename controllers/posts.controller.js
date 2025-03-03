@@ -162,28 +162,24 @@ export const PostController = {
   // FIXME: покачто ошибка из за не совпадающих полей от клиента и только один файл
   async updateById(req, res) {
     const postId = req.params.id
-    const buffer = req.file?.buffer
-    console.log(req.file)
+    const files = req.files
+    console.log(files)
     console.log(req.body)
     try {
       const post = await Post.findByPk(postId) // находим пост в базе по primary key
 
-      // delete old image from s3 and add new in s3 and in DB
-      if (buffer) {
-        let oldImage = post.main_image
+      if (files.length > 0) {
+        console.log(`>>>>>>> files amount is: ${files.length}`)
 
-        oldImage = await urlUtils.refactoreUrl(oldImage)
-
-        s3Service.deleteOneImage(process.env.AWS_BUCKET_NAME, oldImage)
-
-        let newImageKey = await urlUtils.generateNewKey(req.file.originalname)
-        let fileType = req.file.mimetype
-        await s3Service.addOneImage(buffer, process.env.AWS_BUCKET_NAME, newImageKey, fileType)
-
-        const newS3ImageUrl = await urlUtils.getPublicUrlS3(newImageKey)
-
-        post.main_image = newS3ImageUrl
-        await post.save()
+        await Promise.all(
+          files.map(async (image) => {
+            let newImageKey = await urlUtils.generateNewKey(image.originalname)
+            let fileType = image.mimetype
+            await s3Service.addOneImage(image.buffer, process.env.AWS_BUCKET_NAME, newImageKey, fileType)
+            const newS3ImageUrl = await urlUtils.getPublicUrlS3(newImageKey)
+            await Image.create({ user_id: req.user.id, post_id: post.id, image_url: newS3ImageUrl })
+          })
+        )
       }
 
       Object.assign(post, { ...req.body }) // Обновляем поля в посте при помощи деструктуризации req.body
