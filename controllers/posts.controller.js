@@ -168,6 +168,9 @@ export const PostController = {
     try {
       const post = await Post.findByPk(postId) // находим пост в базе по primary key
 
+      if (post.user_id !== req.user.id)
+        return res.status(401).json({ message: 'you have not permission to update this post' })
+
       if (files.length > 0) {
         console.log(`>>>>>>> files amount is: ${files.length}`)
 
@@ -232,9 +235,17 @@ export const PostController = {
   async deleteImageById(req, res) {
     const image_id = req.params.id
     try {
-      await Image.destroy({ where: { id: image_id } })
+      const image = await Image.findByPk(image_id)
+      console.log('>>>>>>>> image >>>', image)
+      const image_url = image.image_url
 
-      res.json({ message: `image with id: ${image_id} delete success` })
+      const imageUrlForS3 = await urlUtils.refactoreUrl(image_url)
+
+      await s3Service.deleteOneImage(imageUrlForS3)
+
+      await image.destroy()
+
+      res.json({ message: `image with url: ${image_url} delete success` })
     } catch (error) {
       console.log(error)
       res.status(500).json(error)

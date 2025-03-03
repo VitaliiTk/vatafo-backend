@@ -15,9 +15,7 @@ export const registration = async (req, res) => {
     // Проверяем существует ли пользователь с таким email
     const existingUser = await User.findOne({ where: { email } })
     if (existingUser) {
-      return res
-        .status(400)
-        .json({ error: 'Такой пользователь уже существует' })
+      return res.status(400).json({ error: 'Такой пользователь уже существует' })
     }
 
     // Создаем нового пользователя
@@ -44,7 +42,8 @@ export const login = async (req, res) => {
     }
 
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-      expiresIn: '1h',
+      expiresIn: '1h'
+      // expiresIn: '10s' // for test
     })
 
     res.json({ token })
